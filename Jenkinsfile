@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git url: 'https://github.com/awantikakagdelwar-max/ui_automation_level_02.git', branch: 'main'
+                checkout scm
             }
         }
 
@@ -12,8 +12,9 @@ pipeline {
             steps {
                 bat """
                 python -m venv venv
-                venv\\Scripts\\pip install --upgrade pip
-                venv\\Scripts\\pip install -r requirements.txt
+                venv\\Scripts\\python -m pip install --upgrade pip
+                cd ui_automation_level_02
+                ..\\venv\\Scripts\\python -m pip install -r requirements.txt
                 """
             }
         }
@@ -21,14 +22,15 @@ pipeline {
         stage('Run Tests') {
             steps {
                 bat """
-                venv\\Scripts\\pytest --alluredir=reports
+                cd ui_automation_level_02
+                ..\\venv\\Scripts\\pytest --alluredir=reports
                 """
             }
         }
 
         stage('Archive Report') {
             steps {
-                archiveArtifacts artifacts: 'reports/**', fingerprint: true
+                archiveArtifacts artifacts: 'ui_automation_level_02/reports/**', fingerprint: true
             }
         }
     }
