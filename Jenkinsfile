@@ -4,26 +4,31 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main',
-                    url: 'https://github.com/awantikakagdelwar-max/ui_automation_level_02.git'
+                git url: 'https://github.com/awantikakagdelwar-max/ui_automation_level_02.git', branch: 'main'
             }
         }
 
         stage('Install Dependencies') {
             steps {
-                sh 'pip install -r requirements.txt'
+                bat """
+                python -m venv venv
+                venv\\Scripts\\pip install --upgrade pip
+                venv\\Scripts\\pip install -r requirements.txt
+                """
             }
         }
 
         stage('Run Tests') {
             steps {
-                sh 'pytest --html=report.html --self-contained-html'
+                bat """
+                venv\\Scripts\\pytest --alluredir=reports
+                """
             }
         }
 
         stage('Archive Report') {
             steps {
-                archiveArtifacts artifacts: 'report.html', fingerprint: true
+                archiveArtifacts artifacts: 'reports/**', fingerprint: true
             }
         }
     }
