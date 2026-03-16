@@ -33,5 +33,14 @@ pipeline {
                 archiveArtifacts artifacts: 'ui_automation_level_02/reports/**', fingerprint: true
             }
         }
+        stage('Allure Report') {
+            steps {
+              allure([
+               includeProperties: false,
+               jdk: '',
+               results: [[path: 'ui_automation_level_02/reports']]
+        ])
+    }
+}
     }
 }
